@@ -1,0 +1,15 @@
+# value 254
+
+ldi 10
+sta value
+
+countdown:
+    lda value
+    dec 
+    out
+    sta value
+    dec
+    jn
+
+hlt
+
