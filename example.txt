@@ -1,0 +1,31 @@
+#import another_program.txt
+
+#define LIMIT 10
+#define C_A 0
+#define C_B 0
+#define C_C 0
+#define C_D 0
+
+section.data
+
+    ; variables are defined here 
+    var num 5
+    const counter 0
+
+section.code
+
+    ; code is written here
+    lda num
+    inc num
+
+    code:
+        inc 
+        add counter
+        jmp code
+        sub 0x6b
+        lda 0b00000010
+
+
+
+; comments
+; # is pre
