@@ -8,29 +8,12 @@ INSTRUCTIONS = [
     "sub",
     "inc",
     "dec",
+    "out",
+    "in",
+    "null",
     "jmp",
     "jc",
     "jn",
-    "jz",
-    "inw",
-    "inx",
-    "outy",
-    "outz",
-    "call",
-    "ret",
-    "push",
-    "pull",
-    "pop",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
     "hlt"
 ]
 
@@ -44,45 +27,36 @@ BIN_CHARS = [
 
 ADDR_SPOT = "@ADDRESS"
 DATA_SPOT = "@DATA"
-INFO_SPOT = "@INFO"
 
-class ASMSyntaxError(Exception):
-    pass
+def hex_to_int(value):
+    value = value[2:]
+    value = value[::-1]
+    digit = 1
+    num = 0
+    for i in range(len(value)):
+        num += HEX_CHARS.index(value[i]) * digit
+        digit = digit * 16
+    return num
 
-def read_file(path, split=True):
-    with open(path+".txt", "r") as f:
-        data = f.read()
-        if split:
-            data = data.split("\n")
-        return data
+def bin_to_int(value):
+    value = value[2:]
+    value = value[::-1]
+    digit = 1
+    num = 0
+    for i in range(len(value)):
+        num += BIN_CHARS.index(value[i]) * digit
+        digit = digit * 2
+    return num
 
-def write_file(path, data):
-    with open(path+".txt", "w") as f:
-        f.write(data)
-
-def make_int(value):
+def to_int(value):
     if value[:2] == "0b":
-        value = value[2:]
-        value = value[::-1]
-        digit = 1
-        num = 0
-        for i in range(len(value)):
-            num += BIN_CHARS.index(value[i]) * digit
-            digit = digit * 2
-        return num
+        return bin_to_int(value)
     elif value[:2] == "0x":
-        value = value[2:]
-        value = value[::-1]
-        digit = 1
-        num = 0
-        for i in range(len(value)):
-            num += HEX_CHARS.index(value[i]) * digit
-            digit = digit * 16
-        return num
+        return hex_to_int(value)
     else:
         return int(value)
 
-def is_literal_value(value):
+def is_raw_value(value):
     try:
         int(value)
     except ValueError:
@@ -95,31 +69,28 @@ def is_literal_value(value):
         return True
     return False
 
+def read_file(path, split=True):
+    with open(path+".txt", "r") as f:
+        data = f.read()
+        if split:
+            data = data.split("\n")
+        return data
 
-class Assembler:
-    MEM_SIZE = 255
-    def __init__(self):
-        self.output = []
-        self.data = []
-    
-    def _clean(self):
-        self.data = [line.strip() for line in self.data]
-        self.data = [line for line in self.data if line != ""]
-        new_data = []
-        for line in self.data:
-            if ";" in line:
-                parts = line.split(";")
-                new_data.append(parts[0].strip())
-                continue
-            new_data.append(line)
-        self.data = new_data
-    
-    
-    
-    def assemble(self, data):
-        pass
+def write_file(path, data):
+    with open(path+".txt", "w") as f:
+        f.write(data)
 
-
+def clean_assembly(assembly):
+    assembly = [line.strip() for line in assembly]
+    assembly = [line for line in assembly if line != ""]
+    new_assembly = []
+    for line in assembly:
+        if ";" in line:
+            parts = line.split(";")
+            new_assembly.append(parts[0].strip())
+            continue
+        new_assembly.append(line)
+    return new_assembly
 
 def format_output(output, file):
     format_data = read_file(file, split=False)

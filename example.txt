@@ -27,5 +27,11 @@ section.code
 
 
 
+
 ; comments
-; # is pre
+; # is header code
+; section means section of memory
+; word: is a label 
+; lda is a memonic
+; lda 50 <- is an operand
+; literal -> 10 variable -> num
