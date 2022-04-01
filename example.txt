@@ -2,15 +2,15 @@
 
 #define LIMIT 10
 #define C_A 0
-#define C_B 0
-#define C_C 0
-#define C_D 0
+#define C_B 1
+#define C_C 2
+#define C_D 3
 
 section.data
 
     ; variables are defined here 
-    var num 5
-    const counter 0
+    num 5
+    counter 0xe
 
 section.code
 

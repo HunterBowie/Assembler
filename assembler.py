@@ -49,6 +49,15 @@ INFO_SPOT = "@INFO"
 class ASMSyntaxError(Exception):
     pass
 
+class ASMMemoryError(Exception):
+    pass
+
+class ASMNameError(Exception):
+    pass
+
+class ASMImportError(Exception):
+    pass
+
 def read_file(path, split=True):
     with open(path+".txt", "r") as f:
         data = f.read()
@@ -100,102 +109,60 @@ class Assembler:
     MEM_SIZE = 255
     def __init__(self):
         self.output = []
-        self.data = []
+        self.raw_data = [] # ["#import 'another file'", "section.data"]
+        self.data = {"header": [], "section.data": [], "section.code": []}
+        self.defines = [] # {"name": value}
+        self.labels = [] # {"name": addr}
+        self.variables = [] # {"name": addr}
     
-    def _clean(self):
-        self.data = [line.strip() for line in self.data]
-        self.data = [line for line in self.data if line != ""]
-        new_data = []
-        for line in self.data:
+    def _clean_raw(self):
+        self.raw_data = [line.strip() for line in self.raw_data]
+        self.raw_data = [line for line in self.raw_data if line != ""]
+        new_raw_data = []
+        for line in self.raw_data:
             if ";" in line:
                 parts = line.split(";")
-                new_data.append(parts[0].strip())
+                new_raw_data.append(parts[0].strip())
                 continue
-            new_data.append(line)
-        self.data = new_data
+            new_raw_data.append(line)
+        self.raw_data = new_raw_data
     
+    def _load_data_from_raw(self):
+        for line in self.raw_data:
+            pass
     
+    def _proccess_header(self):
+        data = self.data["header"]
     
-    def assemble(self, data):
-        pass
+    def _proccess_data_section(self):
+        data = self.data["section.data"]
+    
+    def _proccess_code_section(self):
+        data = self.data["section.code"]
+    
+    def assemble(self, raw_data):
+        self.raw_data = raw_data
+        self._clean_raw()
+        self._load_data_from_raw()
+        self._proccess_header()
+        self._proccess_data_section()
+        self._proccess_code_section()
+        return self.data
 
 
-
-def format_output(output, file):
-    format_data = read_file(file, split=False)
+def format_output(output, format):
     new_output = []
     for addr_data in output:
         addr, data = addr_data
-        output_line = format_data.replace(ADDR_SPOT, str(addr))
+        output_line = format.replace(ADDR_SPOT, str(addr))
         output_line = output_line.replace(DATA_SPOT, str(data))
         new_output.append(output_line)
     return new_output
-
-def merge_to_string(value):
-    string = ""
-    for item in value:
-        string = string + item
-    return string
-
         
-
 def main():
-    labels = {}
-    output = []
-    assembly = read_file("input")
-    assembly = clean_assembly(assembly)
-    remove_lines = []
-    addr = 0
-    for line in assembly:
-        if "#" in line: # variables
-            mod_line = line.replace("#", "")
-            store_value = "0"
-            if "->" in mod_line:
-                mod_line, store_value = mod_line.split(" -> ")
-            mod_line = mod_line.strip()
-            label, value = mod_line.split(" ")
-            labels[label] = value
-            output.append((value, to_int(store_value)))
-            remove_lines.append(line)
-            continue
-
-        if ":" in line: # labels
-            label, mod_line = line.split(":")
-            mod_line = mod_line.strip()
-            labels[label] = addr
-            if mod_line == "":
-                remove_lines.append(line)
-                continue
-            else:
-                assembly[assembly.index(line)] = mod_line
-        addr += 2
-                
-
-        
-    
-    for line in remove_lines:
-        assembly.remove(line)
-    
-    addr = 0
-    for line in assembly:
-        if " " not in line:
-            operation = line
-            operand = "0"
-        else:
-            operation, operand = line.split(" ")
-
-        if is_raw_value(operand):
-            operand = to_int(operand)
-        else:
-            operand = int(labels[operand])
-                
-        output.append((addr, INSTRUCTIONS.index(operation)))
-        output.append((addr+1, operand))
-        addr += 2
-    output = format_output(output, "format")
-    string_output = merge_to_string(output)
-    write_file("output", string_output)
-    print(f"\nAssembled Program at {time.asctime()}\n")
-
+    data = read_file("input")
+    data = Assembler().assemble(data)
+    data = format_output(data, read_file("format", split=False))
+    write_file("output", data)
 
 main()
