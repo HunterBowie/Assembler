@@ -1,4 +1,4 @@
-#import another_program.txt
+#import another_program
 
 #define LIMIT 10
 #define C_A 0
@@ -11,6 +11,7 @@ section.data
     ; variables are defined here 
     num 5
     counter 0xe
+    result null
 
 section.code
 

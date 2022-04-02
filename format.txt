@@ -1,1 +1,1 @@
-writeEEPROM(@ADDRESS, @DATA); //@INFO
+writeEEPROM(@ADDRESS, @DATA);
