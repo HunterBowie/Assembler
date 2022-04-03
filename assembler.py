@@ -1,4 +1,4 @@
-import time
+import time, json
 INSTRUCTIONS = [
     "nop",
     "lda",
@@ -55,6 +55,9 @@ class ASMNameError(Exception):
     pass
 
 class ASMImportError(Exception):
+    pass
+
+class ASMGeneralError(Exception):
     pass
 
 
@@ -190,7 +193,7 @@ class Assembler:
                 raise ASMSyntaxError(f"header declaration {line} is not valid")
         data.clear()
     
-    def _new_instruction(self, memonic, operand):
+    def _new_instruction(self, memonic, operand: str):
         self.output[self.code_mem_addr] = INSTRUCTIONS.index(memonic.lower())
         self.code_mem_addr += 1
         if is_literal_value(operand):
@@ -214,7 +217,7 @@ class Assembler:
         
 
 
-    def _new_variable(self, name, value):
+    def _new_variable(self, name, value: str):
         self.variables[name] = self.data_mem_addr
         if value != "null":
             self._new_instruction("ldi", value)
@@ -237,6 +240,46 @@ class Assembler:
     
     def _proccess_code_section(self):
         data = self.data["section.code"]
+        ahead_addr = self.code_mem_addr
+        label_lines = []
+        for line in data:
+            if ":" in line:
+                parts = line.split(":")
+                for i in range(len(parts)):
+                    if parts[i] == "":
+                        parts.remove("")
+                label = parts[0]
+                label_lines.append((line, label))
+                self.labels[label] = ahead_addr
+                if len(parts) == 1:
+                    continue
+            ahead_addr += 2
+        for line,label in label_lines:
+            new_line = line.replace(label, "")
+            new_line = new_line.replace(":", "")
+            new_line = new_line.strip()
+            if new_line == "":
+                data.remove(line)
+            else:
+                data[data.index(line)] = new_line
+        
+        for line in data:
+            memonic = operand = "0"
+            if " " not in line: # no operand
+                memonic = line
+            else:
+                try:
+                    memonic, operand = line.split(" ")
+                except ValueError:
+                    raise ASMSyntaxError(f"line in section.code is unreadable {line}")
+            self._new_instruction(memonic, operand)
+            
+
+            
+    def get_remaining_memory(self):
+        amount = self.MEM_SIZE + (self.data_mem_addr+1 - self.MEM_SIZE)
+        amount -= self.code_mem_addr
+        return amount
     
     def assemble(self, raw_data):
         self.raw_data = raw_data
@@ -244,29 +287,41 @@ class Assembler:
         self._load_data_from_raw()
         self._proccess_header()
         self._proccess_data_section()
-        print(self.data)
-        print(self.defines, self.variables, self.labels)
-        # self._proccess_code_section()
+        self._proccess_code_section()
         return self.output
 
 
-def format_output(output, format):
-    string_output = ""
-    for addr,data in enumerate(output):
-        output_line = format.replace(ADDR_SPOT, str(addr))
-        output_line = output_line.replace(DATA_SPOT, str(data))
-        string_output = string_output + output_line + "\n"
-    return string_output
+def write_output(output, file_path, format):
+    if format["style"] == "serial":
+        string_output = ""
+        for addr,data in enumerate(output):
+            output_line = format["serial-struct"].replace(ADDR_SPOT, str(addr))
+            output_line = output_line.replace(DATA_SPOT, str(data))
+            string_output = string_output + output_line + "\n"
+        write_file(file_path, string_output)
+    elif format["style"] == "parallel":
+        dict_output = {}
+        for index,value in enumerate(output):
+            dict_output[index] = value
+        json.dump(dict_output, open(file_path+".txt", "w"), indent=format["parallel-spacing"])
+    
+    else:
+        raise ASMGeneralError("format json file has unreadable style attribute")
+    
+
+    
         
 def main():
     timer = RealTimer()
     timer.start()
     data = read_file("input")
-    data = Assembler().assemble(data)
-    data = format_output(data, read_file("format", split=False))
-    write_file("output", data)
+    assembler = Assembler()
+    data = assembler.assemble(data)
+    remaining_memory = assembler.get_remaining_memory()
+    format = json.load(open("format.json", "r"))
+    write_output(data, "output", format)
     timer.stop()
-    print(f"\nAssembled Program in {timer.get()} seconds")
+    print(f"\nAssembled Program in {timer.get()} seconds\nwith {remaining_memory} bytes of memory remaining\n")
 
 
 main()

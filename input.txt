@@ -1,22 +1,4 @@
-#define W_CHAR 0
-
 section.data
-    counter W_CHAR
-    limit 50
 
 section.code
-    sequence:
-        lda counter
-        inc
-        outx
-        sta counter
-        sub limit
-        jz stop
-    
-    stop:
-        lda limit
-        outx
-        hlt
-
-
-
+    lda 6
