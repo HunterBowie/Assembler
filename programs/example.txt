@@ -1,4 +1,5 @@
-#import another_program
+#import "multiply.txt"
+#import "divide.txt"
 
 #define LIMIT 10
 #define C_A 0
@@ -25,6 +26,14 @@ section.code
         jmp code
         sub 0x6b
         lda 0b00000010
+    
+    ldi 3
+    sta m_input1
+    ldi 4
+    sta m_input2
+    call multiply
+    outy m_result
+
 
 
 

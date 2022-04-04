@@ -1,0 +1,22 @@
+; Multiply Program
+
+section.data
+    m_result 0
+    m_input1 null 
+    m_input2 null 
+
+section.code
+    multiply:
+        m_calc:
+            lda m_input1
+            add m_result
+            sta m_result
+            lda m_input2
+            dec
+            jz m_finish
+            sta m_input2
+            jmp m_calc
+        
+        m_finish:
+            ret
+

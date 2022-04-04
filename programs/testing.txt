@@ -1,0 +1,23 @@
+
+section.data
+    constant 5
+
+section.code
+
+    ; basic testing
+    ldi 0
+    outy
+    counting_up:
+        add constant
+        outy
+        jc counting_down
+        jmp counting_up 
+    
+    counting_down:
+        sub constant
+        outy
+        jz stop
+        jmp counting_down
+
+    stop:
+        hlt
