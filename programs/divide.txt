@@ -1,0 +1,24 @@
+; Divide Program
+
+section.data
+    d_result 0
+    d_input1 null  8 
+    d_input2 null  4
+
+section.code
+    divide:
+        ldi 0
+        sta d_result
+        d_calc:
+            lda d_input1
+            sub d_input2
+            jn d_finish
+            sta d_input1
+            lda d_result
+            inc 
+            sta d_result
+            jmp d_calc
+            
+        
+        d_finish:
+            ret
