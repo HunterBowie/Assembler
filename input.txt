@@ -1,4 +1,19 @@
+#define STOP_NUM 42
+
 section.data
+    counter 0
+
 
 section.code
-    lda 6
+    sequence:
+        lda counter
+        inc 
+        sta counter
+        outy
+        ldi STOP_NUM
+        sub counter
+        jz stop
+        jmp sequence
+    
+    stop:
+        hlt
