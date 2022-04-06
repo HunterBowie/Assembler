@@ -45,3 +45,28 @@ section.code
 ; lda is a memonic
 ; lda 50 <- is an operand
 ; literal -> 10 variable -> num
+
+
+
+; testing counting up -> counting down
+
+section.data
+    constant 5
+
+section.code
+    ldi 0
+    outx
+    counting_up:
+        add constant
+        outx
+        jn counting_down
+        jmp counting_up 
+    
+    counting_down:
+        sub constant
+        outx
+        jz stop
+        jmp counting_down
+
+    stop:
+        hlt

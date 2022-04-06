@@ -1,19 +1,20 @@
-#define STOP_NUM 42
-
 section.data
-    counter 0
-
+    constant 5
 
 section.code
-    sequence:
-        lda counter
-        inc 
-        sta counter
-        outy
-        ldi STOP_NUM
-        sub counter
-        jz stop
-        jmp sequence
+    ldi 0
+    outx
+    counting_up:
+        add constant
+        outx
+        jn counting_down
+        jmp counting_up 
     
+    counting_down:
+        sub constant
+        outx
+        jz stop
+        jmp counting_down
+
     stop:
         hlt

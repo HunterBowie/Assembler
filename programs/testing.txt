@@ -10,7 +10,7 @@ section.code
     counting_up:
         add constant
         outy
-        jc counting_down
+        jn counting_down
         jmp counting_up 
     
     counting_down:
