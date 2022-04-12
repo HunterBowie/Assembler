@@ -1,0 +1,28 @@
+#import programs/lcd.txt
+
+#define DINO_CHAR 48
+
+section.data
+    dino_pos 0
+    block_pos 0
+
+section.code
+    
+    dinogame_draw:
+        call lcd_clear
+        lda dino_pos
+        dec
+        jz _draw_dino_up
+        jmp _draw_dino_down
+
+        _draw_dino_down:
+            call lcd_new_line
+            ldi DINO_CHAR
+            outx
+            ret
+        
+        _draw_dino_up:
+            call lcd_go_home
+            ldi DINO_CHAR
+            outx
+            ret

@@ -1,20 +1,24 @@
+#import programs/multiply.txt
+#import programs/lcd.txt
+
 section.data
-    constant 5
+    var 48
 
 section.code
-    ldi 0
-    outx
-    counting_up:
-        add constant
-        outx
-        jn counting_down
-        jmp counting_up 
-    
-    counting_down:
-        sub constant
-        outx
-        jz stop
-        jmp counting_down
+    call lcd_init
 
-    stop:
-        hlt
+    sequence:
+        call lcd_clear
+
+        inx
+        sta m_input1
+        iny
+        sta m_input2
+
+        call multiply
+
+        lda m_result
+        add var
+        outx
+        jmp sequence
+    

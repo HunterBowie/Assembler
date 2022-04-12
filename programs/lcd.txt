@@ -1,0 +1,86 @@
+; LCD library
+
+#define LCD_CLEAR    0b00000001
+#define LCD_FUNC_SET 0b00111000
+#define LCD_ON       0b00001111
+#define LCD_GO_HOME  0b00000010
+#define LCD_RS_FALSE 0
+#define LCD_RS_TRUE  1
+
+#define LCD_A 97
+#define LCD_B 98
+#define LCD_C 99
+#define LCD_D 100
+#define LCD_E 101
+#define LCD_F 102
+#define LCD_G 103
+#define LCD_H 104
+#define LCD_I 105
+#define LCD_J 106
+#define LCD_K 107
+#define LCD_L 108
+#define LCD_M 109
+#define LCD_N 110
+#define LCD_O 111
+#define LCD_P 112
+#define LCD_Q 113
+#define LCD_R 114
+#define LCD_S 115
+#define LCD_T 116
+#define LCD_U 117
+#define LCD_V 118
+#define LCD_W 119
+#define LCD_X 120
+#define LCD_Y 121
+#define LCD_Z 122
+#define LCD_SPACE 32
+
+#define LCD_I_UPPER 73
+#define LCD_SINGLE_QUOTE 39
+
+#define LCD_COLON 58
+#define LCD_RIGHT_PAR 41
+
+#define LCD_DOLLAR 36
+
+
+section.code
+    lcd_init:
+        ldi LCD_RS_FALSE 
+        outy
+        ldi LCD_FUNC_SET
+        outx
+        ldi LCD_ON
+        outx
+        ldi LCD_CLEAR
+        outx
+        ldi LCD_RS_TRUE
+        outy
+        ret
+    
+    lcd_clear:
+        ldi LCD_RS_FALSE 
+        outy
+        ldi LCD_CLEAR
+        outx
+        ldi LCD_RS_TRUE
+        outy
+        ret
+    
+    lcd_new_line:
+        ldi LCD_RS_FALSE 
+        outy
+        ldi 192
+        outx
+        ldi LCD_RS_TRUE
+        outy
+        ret
+    
+    lcd_go_home:
+        ldi LCD_RS_FALSE 
+        outy
+        ldi LCD_GO_HOME
+        outx
+        ldi LCD_RS_TRUE
+        outy
+        ret

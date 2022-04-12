@@ -1,38 +1,17 @@
 import time, json
-INSTRUCTIONS = [
-    "nop",
-    "lda",
-    "ldi",
-    "sta",
-    "add",
-    "sub",
-    "inc",
-    "dec",
-    "jmp",
-    "jc",
-    "jn",
-    "jz",
-    "inx",
-    "iny",
-    "outx",
-    "outy",
-    "call",
-    "ret",
-    "push",
-    "pull",
-    "pop",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
-    "hlt"
-]
+"""
+output: text-serial, text-parallel, arduino-serial, arduino-parallel
+parallel-style: c, json
+"""
+
+SERIAL_ADDR_REF = "@ADDRESS"
+SERIAL_DATA_REF = "@DATA"
+ARDUINO_INSERT_START_SPOT = "//@INSERT_START"
+ARDUINO_INSERT_END_SPOT = "//@INSERT_END"
+
+VAR_SEQUENCE_VALUE = "@VAR-VALUE"
+VAR_SEQUENCE_ADDR = "@VAR-ADDR"
+
 
 HEX_CHARS = [
     "0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"
@@ -41,9 +20,6 @@ HEX_CHARS = [
 BIN_CHARS = [
     "0","1"
 ]
-
-ADDR_SPOT = "@ADDRESS"
-DATA_SPOT = "@DATA"
 
 class ASMSyntaxError(Exception):
     pass
@@ -89,80 +65,87 @@ class RealTimer:
     
     def __repr__(self):
         return f"time: {self.get()}"
-        
 
 
-def read_file(path, split=True):
-    with open(path+".txt", "r") as f:
+def read_file(path, split=None):
+    with open(path, "r") as f:
         data = f.read()
-        if split:
-            data = data.split("\n")
+        if split is not None:
+            data = data.split(split)
         return data
 
 def write_file(path, data):
-    with open(path+".txt", "w") as f:
+    with open(path, "w") as f:
         f.write(data)
 
-def make_int(value):
-    if value[:2] == "0b":
-        value = value[2:]
-        value = value[::-1]
-        digit = 1
-        num = 0
-        for i in range(len(value)):
-            num += BIN_CHARS.index(value[i]) * digit
-            digit = digit * 2
-        return num
-    elif value[:2] == "0x":
-        value = value[2:]
-        value = value[::-1]
-        digit = 1
-        num = 0
-        for i in range(len(value)):
-            num += HEX_CHARS.index(value[i]) * digit
-            digit = digit * 16
-        return num
-    else:
-        return int(value)
 
-def is_literal_value(value):
-    try:
-        int(value)
-    except ValueError:
-        pass
-    else:
-        return True
-    if value[:2] == "0b":
-        return True
-    if value[:2] == "0x":
-        return True
-    return False
+CONFIG = json.load(open("config.json", "r"))
 
 
 class Assembler:
-    MEM_SIZE = 256
-    STACK_LEN = 8
     def __init__(self):
-        self.output = [0 for i in range(self.MEM_SIZE)]
+        self.output = [0 for i in range(CONFIG["memory-size"])]
         self.raw_data = [] # ["#import 'another file'", "section.data"]
         self.data = {"header": [], "section.data": [], "section.code": []}
         self.defines = {} # {"name": value}
         self.variables = {} # {"name": addr}
         self.labels = {} # {"name": addr}
-        self.data_mem_addr = self.MEM_SIZE - self.STACK_LEN - 1
+        self.data_mem_addr = CONFIG["memory-size"] - CONFIG["stack-size"] - 1
         self.code_mem_addr = 0
     
+    @staticmethod
+    def _get_raw_int(value):
+        if value[:2] == "0b":
+            value = value[2:]
+            value = value[::-1]
+            digit = 1
+            num = 0
+            for i in range(len(value)):
+                num += BIN_CHARS.index(value[i]) * digit
+                digit = digit * 2
+            return num
+        elif value[:2] == "0x":
+            value = value[2:]
+            value = value[::-1]
+            digit = 1
+            num = 0
+            for i in range(len(value)):
+                num += HEX_CHARS.index(value[i]) * digit
+                digit = digit * 16
+            return num
+        else:
+            return int(value)
+
+    @staticmethod
+    def _is_literal_value(value):
+        try:
+            int(value)
+        except ValueError:
+            pass
+        else:
+            return True
+        if value[:2] == "0b":
+            return True
+        if value[:2] == "0x":
+            return True
+        return False
+
+
     def _clean_raw(self):
         self.raw_data = [line.strip() for line in self.raw_data]
+        
         self.raw_data = [line for line in self.raw_data if line != ""]
         new_raw_data = []
+        
         for line in self.raw_data:
             if ";" in line:
                 parts = line.split(";")
-                new_raw_data.append(parts[0].strip())
+                if parts[0].strip() != "":
+                    new_raw_data.append(parts[0].strip())
                 continue
             new_raw_data.append(line)
         self.raw_data = new_raw_data
+        
     
     def _load_data_from_raw(self):
         self.data = {"header": [], "section.data": [], "section.code": []}
@@ -181,23 +164,34 @@ class Assembler:
         for line in data:
             if "#define" in line:
                 parts = line.split(" ")
-                if not is_literal_value(parts[2]):
+                parts = [part for part in parts if part.strip() != ""]
+                if not self._is_literal_value(parts[2]):
                     print(f"[WARNING] #define {parts[1]} has non-literal value {parts[2]}")
                 self.defines[parts[1]] = parts[2]
             
             elif "#import" in line:
                 parts = line.split(" ")
-                print("importing placeholder")
+                assembler = Assembler()
+                assembler.raw_data = read_file(parts[1], split="\n")
+                assembler._clean_raw()
+                assembler._load_data_from_raw()
+                for line in assembler.data["header"]:
+                    self.data["header"].append(line)
+                for line in assembler.data["section.data"]:
+                    self.data["section.data"].append(line)
+                for line in assembler.data["section.code"]:
+                    self.data["section.code"].append(line)
             
             else:
+
                 raise ASMSyntaxError(f"header declaration {line} is not valid")
         data.clear()
     
-    def _new_instruction(self, memonic, operand: str):
-        self.output[self.code_mem_addr] = INSTRUCTIONS.index(memonic.lower())
+    def _new_instruction(self, memonic: str, operand: str):
+        self.output[self.code_mem_addr] = CONFIG["instructions"].index(memonic.lower())
         self.code_mem_addr += 1
-        if is_literal_value(operand):
-            operand = make_int(operand)
+        if self._is_literal_value(operand):
+            operand = self._get_raw_int(operand)
         else:
             if operand in self.variables.keys():
                 operand = self.variables[operand]
@@ -207,7 +201,7 @@ class Assembler:
                 operand = self.defines[operand]
                 
                 try:
-                    operand = make_int(operand)
+                    operand = self._get_raw_int(operand)
                 except ValueError:
                     raise ASMSyntaxError(f"defined value {operand} is not a literal")
             else:
@@ -220,8 +214,13 @@ class Assembler:
     def _new_variable(self, name, value: str):
         self.variables[name] = self.data_mem_addr
         if value != "null":
-            self._new_instruction("ldi", value)
-            self._new_instruction("sta", str(self.data_mem_addr))
+            for memonic, operand in CONFIG["var-sequence"]:
+                if operand == VAR_SEQUENCE_ADDR:
+                    operand = str(self.data_mem_addr)
+                elif operand == VAR_SEQUENCE_VALUE:
+                    operand = value
+                self._new_instruction(memonic, operand)
+                
         self.data_mem_addr -= 1
 
     
@@ -273,12 +272,12 @@ class Assembler:
                 except ValueError:
                     raise ASMSyntaxError(f"line in section.code is unreadable {line}")
             self._new_instruction(memonic, operand)
-            
-
+        
             
     def get_remaining_memory(self):
-        amount = self.MEM_SIZE + (self.data_mem_addr+1 - self.MEM_SIZE)
-        amount -= self.code_mem_addr
+        starting_data_mem = CONFIG["memory-size"] - CONFIG["stack-size"] - 1
+        amount = starting_data_mem - self.data_mem_addr
+        amount += self.code_mem_addr
         return amount
     
     def assemble(self, raw_data):
@@ -291,22 +290,37 @@ class Assembler:
         return self.output
 
 
-def write_output(output, file_path, format):
-    if format["style"] == "serial":
+def write_output(output):
+    def get_serial():
         string_output = ""
         for addr,data in enumerate(output):
-            output_line = format["serial-struct"].replace(ADDR_SPOT, str(addr))
-            output_line = output_line.replace(DATA_SPOT, str(data))
+            output_line = CONFIG["serial-struct"].replace(SERIAL_ADDR_REF, str(addr))
+            output_line = output_line.replace(SERIAL_DATA_REF, str(data))
             string_output = string_output + output_line + "\n"
-        write_file(file_path, string_output)
-    elif format["style"] == "parallel":
+        return string_output
+    
+    def get_parallel():
         dict_output = {}
         for index,value in enumerate(output):
             dict_output[index] = value
-        json.dump(dict_output, open(file_path+".txt", "w"), indent=format["parallel-spacing"])
-    
+        return dict_output
+
+    if CONFIG["output"] == "text-serial":
+        string_output = get_serial()
+        write_file(CONFIG["output-file-path"], string_output)
+    elif CONFIG["output"] == "text-parallel":
+        dict_output = get_parallel()
+        json.dump(dict_output, open(CONFIG["output-file-path"], "w"), indent=CONFIG["text-parallel-spacing"])
+    elif CONFIG["output"] == "arduino-serial":
+        string_output = get_serial()
+        string_data = read_file(CONFIG["arduino-file-path"])
+        start_index, end_index = string_data.index(ARDUINO_INSERT_START_SPOT), string_data.index(ARDUINO_INSERT_END_SPOT) 
+        string_data = string_data.replace(string_data[start_index+len(ARDUINO_INSERT_START_SPOT):end_index], "\n" + string_output)
+        write_file(CONFIG["arduino-file-path"], string_data)
+    elif CONFIG["output"] == "arduino-parallel":
+        pass
     else:
-        raise ASMGeneralError("format json file has unreadable style attribute")
+        raise ASMGeneralError("CONFIG json file has unreadable style attribute")
     
 
     
@@ -314,14 +328,17 @@ def write_output(output, file_path, format):
 def main():
     timer = RealTimer()
     timer.start()
-    data = read_file("input")
+    data = read_file(CONFIG["input-file-path"], split="\n")
     assembler = Assembler()
     data = assembler.assemble(data)
-    remaining_memory = assembler.get_remaining_memory()
-    format = json.load(open("format.json", "r"))
-    write_output(data, "output", format)
+    used_memory = assembler.get_remaining_memory()
+    write_output(data)
     timer.stop()
-    print(f"\nAssembled Program in {timer.get()} seconds\nwith {remaining_memory} bytes of memory remaining\n")
+    print(f"""\n
+    -- Assembled Program --\n
+time: {timer.get()} seconds
+memory: {used_memory}/{CONFIG['memory-size']} bytes used
+output: -> {CONFIG['output']} <-\n""")
 
 
 main()

@@ -1,0 +1,67 @@
+#import programs/lcd.txt
+
+section.code
+    call lcd_init
+    ldi LCD_I_UPPER
+    outx
+    ldi LCD_SPACE
+    outx
+    ldi LCD_D
+    outx
+    ldi LCD_I
+    outx
+    ldi LCD_D
+    outx
+    ldi LCD_N
+    outx
+    ldi LCD_SINGLE_QUOTE
+    outx
+    ldi LCD_T
+    outx
+    ldi LCD_SPACE
+    outx
+    ldi LCD_G
+    outx
+    ldi LCD_I
+    outx
+    ldi LCD_V
+    outx
+    ldi LCD_E
+    outx
+    ldi LCD_SPACE
+    outx
+    ldi LCD_U
+    outx
+    ldi LCD_P
+    outx
+    call lcd_new_line
+    ldi LCD_DOLLAR
+    outx
+    ldi 49
+    outx
+    ldi 48
+    outx
+    ldi 48
+    outx
+    ldi LCD_SPACE
+    outx
+    ldi LCD_P
+    outx
+    ldi LCD_L
+    outx
+    ldi LCD_E
+    outx
+    ldi LCD_A
+    outx
+    ldi LCD_S
+    outx
+    ldi LCD_E
+    outx
+    ldi LCD_SPACE
+    outx
+    ldi LCD_COLON
+    outx
+    ldi LCD_RIGHT_PAR
+    outx
+
+    hlt

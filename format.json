@@ -1,5 +1,0 @@
-{
-    "style": "serial",
-    "serial-struct": "writeEEPROM(@ADDRESS, @DATA);",
-    "parallel-spacing": 4
-}
