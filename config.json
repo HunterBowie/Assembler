@@ -1,6 +1,6 @@
 {
     "instructions": [
-        "nop",
+        "nop", 
         "lda",
         "ldi",
         "sta",
