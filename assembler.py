@@ -167,6 +167,8 @@ class Assembler:
                 parts = [part for part in parts if part.strip() != ""]
                 if not self._is_literal_value(parts[2]):
                     print(f"[WARNING] #define {parts[1]} has non-literal value {parts[2]}")
+                if self.defines.has_key(parts[1]):
+                    print(f"[WARNING] #define {parts[1]} has collision {parts[2]}")
                 self.defines[parts[1]] = parts[2]
             
             elif "#import" in line:
