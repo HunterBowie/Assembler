@@ -1,14 +1,12 @@
-#import programs/lcd.txt
+#import programs/dinogame.txt
 
 section.code
     call lcd_init
+    
     loop:
-        iny
-        inc 
-        jn write_char
-        jmp loop
-
-    write_char:
         inx
-        outx
+        sta dino_pos
+        call dinogame_draw
         jmp loop
+    
+    hlt
