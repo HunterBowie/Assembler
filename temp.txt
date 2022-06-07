@@ -1,0 +1,12 @@
+#import programs/dinogame.txt
+
+section.code
+    call lcd_init
+    
+    loop:
+        inx
+        sta dino_pos
+        call dinogame_draw
+        jmp loop
+    
+    hlt

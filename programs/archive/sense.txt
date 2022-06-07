@@ -1,0 +1,41 @@
+#import programs/lcd.txt
+
+section.code
+    call lcd_init
+    start:
+        inx
+        dec 
+        jz draw_pressed
+
+    draw_idle:
+        ldi LCD_I
+        outx
+        ldi LCD_D
+        outx
+        ldi LCD_L
+        outx
+        ldi LCD_E
+        outx
+        jmp finish
+
+    draw_pressed:
+        ldi LCD_P
+        outx
+        ldi LCD_R
+        outx
+        ldi LCD_E
+        outx
+        ldi LCD_S
+        outx
+        ldi LCD_S
+        outx
+        ldi LCD_E
+        outx
+        ldi LCD_D
+        outx
+        jmp finish
+
+    finish:
+        call lcd_clear
+        jmp start
+
