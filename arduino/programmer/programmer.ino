@@ -1,10 +1,11 @@
 #include <avr/pgmspace.h>
 
-#define RUN_PROGRAM 0
+#define RUN_PROGRAM 3
 
 #define PROGRAM_LARGE_CODE 0
 #define PROGRAM_LARGE_CONTROL 1
 #define PROGRAM_SMALL_NUMBERS 2
+#define PROGRAM_SMALL_CODE 3
 
 
 #define LATCH_PIN 2
@@ -89,131 +90,131 @@ void writeEEPROM(unsigned int address, byte data) {
 
 
 
-void programLargeEEPROM_code(){
-  SELECTED_EEPROM_PIN = LARGE_WRITE_PIN;
+void programEEPROM_code(){
+  
 
   //@INSERT_START
 writeEEPROM(0, 2);
-writeEEPROM(1, 1);
+writeEEPROM(1, 0);
 writeEEPROM(2, 3);
-writeEEPROM(3, 247);
-writeEEPROM(4, 4);
-writeEEPROM(5, 247);
-writeEEPROM(6, 3);
-writeEEPROM(7, 247);
-writeEEPROM(8, 16);
-writeEEPROM(9, 12);
-writeEEPROM(10, 8);
-writeEEPROM(11, 4);
-writeEEPROM(12, 0);
-writeEEPROM(13, 0);
-writeEEPROM(14, 17);
-writeEEPROM(15, 0);
-writeEEPROM(16, 0);
+writeEEPROM(3, 245);
+writeEEPROM(4, 16);
+writeEEPROM(5, 20);
+writeEEPROM(6, 2);
+writeEEPROM(7, 18);
+writeEEPROM(8, 3);
+writeEEPROM(9, 246);
+writeEEPROM(10, 16);
+writeEEPROM(11, 84);
+writeEEPROM(12, 2);
+writeEEPROM(13, 48);
+writeEEPROM(14, 4);
+writeEEPROM(15, 247);
+writeEEPROM(16, 14);
 writeEEPROM(17, 0);
-writeEEPROM(18, 0);
+writeEEPROM(18, 31);
 writeEEPROM(19, 0);
-writeEEPROM(20, 0);
+writeEEPROM(20, 2);
 writeEEPROM(21, 0);
-writeEEPROM(22, 0);
+writeEEPROM(22, 15);
 writeEEPROM(23, 0);
-writeEEPROM(24, 0);
-writeEEPROM(25, 0);
-writeEEPROM(26, 0);
+writeEEPROM(24, 2);
+writeEEPROM(25, 56);
+writeEEPROM(26, 14);
 writeEEPROM(27, 0);
-writeEEPROM(28, 0);
-writeEEPROM(29, 0);
-writeEEPROM(30, 0);
+writeEEPROM(28, 2);
+writeEEPROM(29, 15);
+writeEEPROM(30, 14);
 writeEEPROM(31, 0);
-writeEEPROM(32, 0);
-writeEEPROM(33, 0);
-writeEEPROM(34, 0);
+writeEEPROM(32, 2);
+writeEEPROM(33, 1);
+writeEEPROM(34, 14);
 writeEEPROM(35, 0);
-writeEEPROM(36, 0);
-writeEEPROM(37, 0);
-writeEEPROM(38, 0);
+writeEEPROM(36, 2);
+writeEEPROM(37, 1);
+writeEEPROM(38, 15);
 writeEEPROM(39, 0);
-writeEEPROM(40, 0);
+writeEEPROM(40, 17);
 writeEEPROM(41, 0);
-writeEEPROM(42, 0);
+writeEEPROM(42, 2);
 writeEEPROM(43, 0);
-writeEEPROM(44, 0);
+writeEEPROM(44, 15);
 writeEEPROM(45, 0);
-writeEEPROM(46, 0);
-writeEEPROM(47, 0);
-writeEEPROM(48, 0);
+writeEEPROM(46, 2);
+writeEEPROM(47, 1);
+writeEEPROM(48, 14);
 writeEEPROM(49, 0);
-writeEEPROM(50, 0);
-writeEEPROM(51, 0);
-writeEEPROM(52, 0);
+writeEEPROM(50, 2);
+writeEEPROM(51, 1);
+writeEEPROM(52, 15);
 writeEEPROM(53, 0);
-writeEEPROM(54, 0);
+writeEEPROM(54, 17);
 writeEEPROM(55, 0);
-writeEEPROM(56, 0);
+writeEEPROM(56, 2);
 writeEEPROM(57, 0);
-writeEEPROM(58, 0);
+writeEEPROM(58, 15);
 writeEEPROM(59, 0);
-writeEEPROM(60, 0);
-writeEEPROM(61, 0);
-writeEEPROM(62, 0);
+writeEEPROM(60, 2);
+writeEEPROM(61, 192);
+writeEEPROM(62, 14);
 writeEEPROM(63, 0);
-writeEEPROM(64, 0);
-writeEEPROM(65, 0);
-writeEEPROM(66, 0);
+writeEEPROM(64, 2);
+writeEEPROM(65, 1);
+writeEEPROM(66, 15);
 writeEEPROM(67, 0);
-writeEEPROM(68, 0);
+writeEEPROM(68, 17);
 writeEEPROM(69, 0);
-writeEEPROM(70, 0);
+writeEEPROM(70, 2);
 writeEEPROM(71, 0);
-writeEEPROM(72, 0);
+writeEEPROM(72, 15);
 writeEEPROM(73, 0);
-writeEEPROM(74, 0);
-writeEEPROM(75, 0);
-writeEEPROM(76, 0);
+writeEEPROM(74, 2);
+writeEEPROM(75, 2);
+writeEEPROM(76, 14);
 writeEEPROM(77, 0);
-writeEEPROM(78, 0);
-writeEEPROM(79, 0);
-writeEEPROM(80, 0);
+writeEEPROM(78, 2);
+writeEEPROM(79, 1);
+writeEEPROM(80, 15);
 writeEEPROM(81, 0);
-writeEEPROM(82, 0);
+writeEEPROM(82, 17);
 writeEEPROM(83, 0);
-writeEEPROM(84, 0);
-writeEEPROM(85, 0);
-writeEEPROM(86, 0);
-writeEEPROM(87, 0);
-writeEEPROM(88, 0);
-writeEEPROM(89, 0);
-writeEEPROM(90, 0);
-writeEEPROM(91, 0);
-writeEEPROM(92, 0);
-writeEEPROM(93, 0);
-writeEEPROM(94, 0);
-writeEEPROM(95, 0);
-writeEEPROM(96, 0);
-writeEEPROM(97, 0);
-writeEEPROM(98, 0);
+writeEEPROM(84, 1);
+writeEEPROM(85, 246);
+writeEEPROM(86, 3);
+writeEEPROM(87, 244);
+writeEEPROM(88, 2);
+writeEEPROM(89, 2);
+writeEEPROM(90, 3);
+writeEEPROM(91, 243);
+writeEEPROM(92, 16);
+writeEEPROM(93, 100);
+writeEEPROM(94, 1);
+writeEEPROM(95, 245);
+writeEEPROM(96, 3);
+writeEEPROM(97, 247);
+writeEEPROM(98, 17);
 writeEEPROM(99, 0);
-writeEEPROM(100, 0);
+writeEEPROM(100, 2);
 writeEEPROM(101, 0);
-writeEEPROM(102, 0);
-writeEEPROM(103, 0);
-writeEEPROM(104, 0);
-writeEEPROM(105, 0);
-writeEEPROM(106, 0);
-writeEEPROM(107, 0);
-writeEEPROM(108, 0);
-writeEEPROM(109, 0);
-writeEEPROM(110, 0);
-writeEEPROM(111, 0);
-writeEEPROM(112, 0);
-writeEEPROM(113, 0);
-writeEEPROM(114, 0);
+writeEEPROM(102, 3);
+writeEEPROM(103, 245);
+writeEEPROM(104, 1);
+writeEEPROM(105, 244);
+writeEEPROM(106, 5);
+writeEEPROM(107, 243);
+writeEEPROM(108, 10);
+writeEEPROM(109, 120);
+writeEEPROM(110, 3);
+writeEEPROM(111, 244);
+writeEEPROM(112, 1);
+writeEEPROM(113, 245);
+writeEEPROM(114, 6);
 writeEEPROM(115, 0);
-writeEEPROM(116, 0);
-writeEEPROM(117, 0);
-writeEEPROM(118, 0);
-writeEEPROM(119, 0);
-writeEEPROM(120, 0);
+writeEEPROM(116, 3);
+writeEEPROM(117, 245);
+writeEEPROM(118, 8);
+writeEEPROM(119, 104);
+writeEEPROM(120, 17);
 writeEEPROM(121, 0);
 writeEEPROM(122, 0);
 writeEEPROM(123, 0);
@@ -663,8 +664,7 @@ const PROGMEM uint32_t INSTRUCTIONS[NUM_FLAGS][NUM_INSTRUCTIONS][NUM_CYCLES] = {
 };
 
 
-void programLargeEEPROM_control() {
-  SELECTED_EEPROM_PIN = LARGE_WRITE_PIN;
+void programEEPROM_control() {
 
   // Control Logic
   Serial.println("programming Large EEPROM");
@@ -708,7 +708,7 @@ void programLargeEEPROM_control() {
 
 
 
-void programSmallEEPROM_numbers() {
+void programEEPROM_numbers() {
   
 //  byte numbers[] = {0b01111110, 0b00110000, 0b01101101, 0b01111001, 0b00110011, 0b01011011, 0b01011111, 0b01110000, 0b01111111, 0b01111011};
 
@@ -786,16 +786,24 @@ void setup() {
 
   Serial.println("starting ...");
   if (RUN_PROGRAM == PROGRAM_LARGE_CODE) {
+      SELECTED_EEPROM_PIN = LARGE_WRITE_PIN;
     Serial.println("program type: code, EEPROM size: large");
-    programLargeEEPROM_code();
+    programEEPROM_code();
   }
   else if (RUN_PROGRAM == PROGRAM_LARGE_CONTROL) {
+     SELECTED_EEPROM_PIN = LARGE_WRITE_PIN;
     Serial.println("program type: control, EEPROM size: large");
-    programLargeEEPROM_control();
+    programEEPROM_control();
   }
   else if (RUN_PROGRAM == PROGRAM_SMALL_NUMBERS) {
+    SELECTED_EEPROM_PIN = SMALL_WRITE_PIN;
     Serial.println("program type: numbers, EEPROM size: small");
-    programSmallEEPROM_numbers();
+    programEEPROM_numbers();
+  }
+  else if (RUN_PROGRAM == PROGRAM_SMALL_CODE) {
+    SELECTED_EEPROM_PIN = SMALL_WRITE_PIN;
+    Serial.println("program type: code, EEPROM size: small");
+    programEEPROM_code();
   }
 
   else {

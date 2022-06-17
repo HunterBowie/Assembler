@@ -2,8 +2,8 @@
 
 section.data
     d_result 0
-    d_input1 null  8 
-    d_input2 null  4
+    d_input1 null
+    d_input2 null
 
 section.code
     divide:

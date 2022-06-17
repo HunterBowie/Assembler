@@ -1,0 +1,25 @@
+#import programs/divide.txt
+#import programs/multiply.txt
+
+section.data
+    p_result null
+    p_input null
+
+section.code
+    is_prime:
+        lda p_input
+        sta d_input1
+        ldi 2
+        sta d_input2
+        call divide
+        lda d_result
+        
+        p_loop:
+            lda d_result
+            sta m_input1
+            sta m_input2
+            call multiply
+
+        ret
+
+

@@ -1,12 +1,12 @@
-#import programs/dinogame.txt
+#import programs/lcd.txt
+#import programs/prime.txt
 
 section.code
     call lcd_init
-    
-    loop:
-        inx
-        sta dino_pos
-        call dinogame_draw
-        jmp loop
-    
+    ldi 10
+    sta p_input
+    call check_prime
+    ldi 48
+    add p_result
+    outx
     hlt

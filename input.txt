@@ -1,13 +1,12 @@
-section.data
-    var 1
+#import programs/lcd.txt
+#import programs/prime.txt
 
 section.code
-    start:
-        add var
-        sta var
-        call sub
-        jmp start
-
-    sub:
-        nop
-        ret
+    call lcd_init
+    ldi 18
+    sta p_input
+    call is_prime
+    ldi 48
+    add p_result
+    outx
+    hlt
