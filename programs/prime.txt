@@ -4,6 +4,7 @@
 section.data
     p_result null
     p_input null
+    p_zero 0
 
 section.code
     is_prime:
@@ -12,14 +13,27 @@ section.code
         ldi 2
         sta d_input2
         call divide
-        lda d_result
+        lda d_remainder
+        add p_zero
+        jz p_not_prime
         
         p_loop:
             lda d_result
             sta m_input1
             sta m_input2
             call multiply
-
-        ret
+        
+        p_not_prime:
+            ldi 0
+            sta p_result
+            jmp p_finish
+           
+        p_is_prime:
+            ldi 1
+            sta p_result
+            jmp p_finish
+        
+        p_finish:
+            ret
 
 
