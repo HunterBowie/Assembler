@@ -1,12 +1,15 @@
-#import programs/lcd.txt
 #import programs/prime.txt
+#import programs/lcd.txt
+
+section.data
+    value 48
 
 section.code
     call lcd_init
-    ldi 10
+    inx
     sta p_input
-    call check_prime
-    ldi 48
-    add p_result
+    call is_prime
+    lda p_result
+    add value
     outx
     hlt

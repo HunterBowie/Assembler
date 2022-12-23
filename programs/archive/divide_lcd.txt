@@ -1,0 +1,43 @@
+#import programs/divide.txt
+#import programs/lcd.txt
+
+section.data
+    var 48
+
+section.code
+    call lcd_init
+    iny
+    sta d_input1
+    inx
+    sta d_input2
+    call divide
+    lda d_result
+    add var
+    outx
+    ldi LCD_SPACE
+    outx
+    ldi LCD_R
+    outx
+    ldi LCD_E
+    outx
+    ldi LCD_M
+    outx
+    ldi LCD_A
+    outx
+    ldi LCD_I
+    outx
+    ldi LCD_N
+    outx
+    ldi LCD_D
+    outx
+    ldi LCD_E
+    outx
+    ldi LCD_R
+    outx
+    ldi LCD_SPACE
+    outx
+    lda d_remainder
+    add var
+    outx
+    hlt
+

@@ -2,7 +2,7 @@
 
 #define LCD_CLEAR    0b00000001
 #define LCD_FUNC_SET 0b00111000
-#define LCD_ON       0b00001111
+#define LCD_ON       0b00001100
 #define LCD_GO_HOME  0b00000010
 #define LCD_RS_FALSE 0
 #define LCD_RS_TRUE  1

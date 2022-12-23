@@ -1,13 +1,15 @@
 #import programs/divide.txt
-#import programs/multiply.txt
 
 section.data
     p_result null
     p_input null
+    p_counter null
     p_zero 0
+    p_var 3
 
 section.code
     is_prime:
+        ; Check input divisible by 2
         lda p_input
         sta d_input1
         ldi 2
@@ -16,12 +18,30 @@ section.code
         lda d_remainder
         add p_zero
         jz p_not_prime
+
+        ; Store counter with input/2
+        lda d_result
+        dec
+        sta p_counter
         
         p_loop:
-            lda d_result
-            sta m_input1
-            sta m_input2
-            call multiply
+            ; Divide input by counter
+            lda p_input
+            sta d_input1
+            lda p_counter
+            sta d_input2
+            call divide
+            ; Check divide remainder 
+            lda d_remainder
+            add p_zero
+            jz p_not_prime
+            ; Decrement counter and check break
+            lda p_counter
+            dec 
+            sta p_counter
+            sub p_var
+            jn p_is_prime
+            jmp p_loop
         
         p_not_prime:
             ldi 0
@@ -31,7 +51,6 @@ section.code
         p_is_prime:
             ldi 1
             sta p_result
-            jmp p_finish
         
         p_finish:
             ret
