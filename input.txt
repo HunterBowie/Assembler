@@ -1,12 +1,11 @@
-#import programs/dinogame.txt
+#import programs/divide.txt
+
 
 section.code
-    call lcd_init
-    
-    loop:
-        inx
-        sta dino_pos
-        call dinogame_draw
-        jmp loop
-    
-    
+    ldi 9
+    sta d_input1
+    ldi 4
+    sta d_input2
+    call d_calc
+    lda d_remainder
+    hlt
