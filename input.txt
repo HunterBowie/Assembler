@@ -1,5 +1,6 @@
 #import programs/divide.txt
 
+; divides 9 by 4 then loads remainder into A register
 
 section.code
     ldi 9

@@ -88,7 +88,7 @@ void writeEEPROM(unsigned int address, byte data) {
   
 }
 
-
+// This is where the assembler writes the machine code:
 
 void programEEPROM_code(){
   

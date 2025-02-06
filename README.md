@@ -80,4 +80,4 @@ Translating the above code into english would be something like this:
 >Store the value in the A register in **input2** <br>
 >Jump to the begining of the program<br>
 
-If someone wanted to use this code, they would have to import this file, load values into the m_input1 and m_input2 variables, and then use "cal multiply" to call the multiply subroutine. The answer would be available to them in m_result.
+If someone wanted to use this code, they would have to import this file, load values into the m_input1 and m_input2 variables, and then use "call multiply" to call the multiply subroutine. The answer would be available to them in m_result.
