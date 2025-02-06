@@ -2,7 +2,7 @@
 
 ## About
 
-This was a program I made that translated a bare bones assembler I made for my 8-bit breadboard computer. I would write code in the input.txt file and then run the program and it would dump the resulting machine code as C++ for my arduino. The arduino would then write the machine code onto an EEPROM (non-volatile memory) that my computer used for reading instructions and storing data.
+I made this program to translate a bare bones assembly language that I designed for my custom-built 8-bit breadboard computer. I would write code in the input.txt file and then run the program and it would dump the resulting machine code as C++ for my arduino. The arduino would then write the machine code onto an EEPROM (non-volatile memory) that my computer used for reading instructions and storing data.
 
 
 <img width="500" alt="Screenshot 2024-09-07 at 11 50 50 AM" src="https://github.com/user-attachments/assets/82f86077-9ae6-4e45-85ed-91bb27c46ca3">
