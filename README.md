@@ -1,6 +1,6 @@
 # Assembler Project
 
-## About
+## About the Project
 
 I made this program to translate a bare bones assembly language that I designed for my custom-built 8-bit breadboard computer. I would write code in the input.txt file and then run the program and it would dump the resulting machine code as C++ for my arduino. The arduino would then write the machine code onto an EEPROM (non-volatile memory) that my computer used for reading instructions and storing data.
 
