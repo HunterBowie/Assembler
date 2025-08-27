@@ -43,7 +43,8 @@ class Assembler:
         self.code_mem_addr = 0
     
     @staticmethod
-    def _get_raw_int(value):
+    def _get_raw_int(value: str) -> int:
+        """Returns the base 10 numerical value of the given literal data."""
         if value[:2] == "0b":
             value = value[2:]
             value = value[::-1]
@@ -66,7 +67,8 @@ class Assembler:
             return int(value)
 
     @staticmethod
-    def _is_literal_value(value):
+    def _is_literal_value(value: str) -> bool:
+        """Returns true if the given value can be interpreted as literal."""
         try:
             int(value)
         except ValueError:
@@ -81,7 +83,7 @@ class Assembler:
 
 
     def _clean_raw(self):
-        """Clean the raw text data """
+        """Clean the raw text data and create an array of lines."""
         self.raw_data = [line.strip() for line in self.raw_data]
         
         self.raw_data = [line for line in self.raw_data if line != ""]
@@ -98,6 +100,7 @@ class Assembler:
         
     
     def _load_data_from_raw(self):
+        """Split the cleaned raw data into different sections."""
         self.data = {"header": [], "section.data": [], "section.code": []}
         position = "header"
         for line in self.raw_data:
@@ -110,6 +113,7 @@ class Assembler:
             self.data[position].append(line)
             
     def _proccess_header(self):
+        """Proccess data loaded in the header section and store it for later use."""
         data = self.data["header"]
         for line in data:
             if "#define" in line:
@@ -140,6 +144,7 @@ class Assembler:
         data.clear()
     
     def _new_instruction(self, memonic: str, operand: str):
+        """Proccess an instruction in the code section of the program."""
         self.output[self.code_mem_addr] = CONFIG["instructions"].index(memonic.lower())
         self.code_mem_addr += 1
         if self._is_literal_value(operand):
@@ -164,7 +169,9 @@ class Assembler:
 
 
     def _new_variable(self, name, value: str):
+        """Create a label for a memory address defined in the data section of the program."""
         self.variables[name] = self.data_mem_addr
+        # creating instructions that load this variable into memory at the start of the program
         if value != "null":
             for memonic, operand in CONFIG["var-sequence"]:
                 if operand == VAR_SEQUENCE_ADDR:
@@ -177,6 +184,7 @@ class Assembler:
 
     
     def _proccess_data_section(self):
+        """Creates new variables from data section after it is properly loaded."""
         data = self.data["section.data"]
         for line in data:
             for d_name,d_value in self.defines.items():
@@ -190,6 +198,7 @@ class Assembler:
 
     
     def _proccess_code_section(self):
+        """Creates new instructions from code section after it is properly loaded."""
         data = self.data["section.code"]
         ahead_addr = self.code_mem_addr
         label_lines = []
@@ -226,13 +235,15 @@ class Assembler:
             self._new_instruction(memonic, operand)
         
             
-    def get_remaining_memory(self):
+    def get_remaining_memory(self) -> int:
+        """Returns the number of remaining bytes in the EEPROM."""
         starting_data_mem = CONFIG["memory-size"] - CONFIG["stack-size"] - 1
         amount = starting_data_mem - self.data_mem_addr
         amount += self.code_mem_addr
         return amount
     
-    def assemble(self, raw_data):
+    def assemble(self, raw_data: str) -> dict:
+        "Returns a dictionary containing address:data pairs for the EEPROM."
         self.raw_data = raw_data
         self._clean_raw()
         self._load_data_from_raw()
