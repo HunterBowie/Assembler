@@ -1,6 +1,6 @@
-from .timer import RealTimer
-from .util import read_file
-from .assembler import Assembler, CONFIG, write_output
+from timer import RealTimer
+from util import read_file
+from assembler import Assembler, CONFIG, write_output
 from os import path
         
 def main():
