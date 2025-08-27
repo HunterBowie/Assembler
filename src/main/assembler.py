@@ -1,7 +1,7 @@
 import time, json
 from os import path, pardir
-from .exceptions import ASMMemoryError, ASMSyntaxError, ASMNameError
-from .util import write_file, read_file, CONFIG_PATH
+from exceptions import ASMMemoryError, ASMSyntaxError, ASMNameError
+from util import write_file, read_file, CONFIG_PATH
 """
 output: text-serial, text-parallel, arduino-serial, arduino-parallel
 parallel-style: c, json
@@ -243,7 +243,7 @@ class Assembler:
         return amount
     
     def assemble(self, raw_data: str) -> dict:
-        "Returns a dictionary containing address:data pairs for the EEPROM."
+        """Returns a list where each index-value pair is an address-data pair in the EEPROM."""
         self.raw_data = raw_data
         self._clean_raw()
         self._load_data_from_raw()
@@ -264,8 +264,8 @@ def write_output(output):
     
     def get_parallel():
         dict_output = {}
-        for index,value in enumerate(output):
-            dict_output[index] = value
+        for addr,value in enumerate(output):
+            dict_output[addr] = value
         return dict_output
 
     if CONFIG["output"] == "text-serial":
